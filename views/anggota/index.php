@@ -80,10 +80,10 @@
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-center gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="openModal('modalEditAnggota')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 flex items-center justify-center transition-all shadow-sm border-b-2">
+                                <button onclick="editAnggota('<?= $a['id_anggota']; ?>', '<?= addslashes($a['nama']); ?>', '<?= addslashes($a['alamat']); ?>', '<?= addslashes($a['no_telp']); ?>', '<?= addslashes($a['email']); ?>', '<?= $a['tanggal_daftar']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 flex items-center justify-center transition-all shadow-sm border-b-2">
                                     <i class="ph-bold ph-pencil-simple text-sm"></i>
                                 </button>
-                                <button onclick="openModal('modalHapusAnggota')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200 flex items-center justify-center transition-all shadow-sm border-b-2">
+                                <button onclick="hapusAnggota('<?= $a['id_anggota']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200 flex items-center justify-center transition-all shadow-sm border-b-2">
                                     <i class="ph-bold ph-trash text-sm"></i>
                                 </button>
                             </div>
@@ -169,11 +169,37 @@
             </button>
         </div>
         <div class="p-6 overflow-y-auto">
-            <p class="text-slate-500 text-sm mb-4">Ubah detail atribut anggota melalui form di sini. (Form input dihilangkan untuk mockup)</p>
-            <div class="mt-8 flex justify-end gap-3">
-                <button type="button" onclick="closeModal('modalEditAnggota')" class="px-5 py-2.5 text-slate-500 bg-white border border-slate-200 hover:bg-slate-50 font-semibold rounded-xl transition-colors">Batal</button>
-                <button type="button" onclick="closeModal('modalEditAnggota')" class="px-5 py-2.5 text-white bg-indigo-600 hover:bg-indigo-700 font-semibold rounded-xl shadow-lg shadow-indigo-500/30 transition-colors">Perbarui</button>
-            </div>
+            <form action="<?= BASEURL; ?>/anggota/edit" method="POST">
+                <input type="hidden" name="id_anggota" id="edit_id_anggota">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Nama Lengkap</label>
+                        <input type="text" name="nama" id="edit_nama" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-1">Nomor Telepon</label>
+                            <input type="text" name="no_telp" id="edit_no_telp" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-1">Email</label>
+                            <input type="email" name="email" id="edit_email" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Alamat Lengkap</label>
+                        <textarea name="alamat" id="edit_alamat" rows="3" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all resize-none"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Tanggal Daftar</label>
+                        <input type="date" name="tanggal_daftar" id="edit_tanggal_daftar" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all">
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-end gap-3">
+                    <button type="button" onclick="closeModal('modalEditAnggota')" class="px-5 py-2.5 text-slate-500 bg-white border border-slate-200 hover:bg-slate-50 font-semibold rounded-xl transition-colors">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 text-white bg-indigo-600 hover:bg-indigo-700 font-semibold rounded-xl shadow-lg shadow-indigo-500/30 transition-colors">Perbarui</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -191,8 +217,25 @@
             
             <div class="flex justify-center gap-3">
                 <button type="button" onclick="closeModal('modalHapusAnggota')" class="px-5 py-2.5 text-slate-500 bg-white border border-slate-200 hover:bg-slate-50 font-semibold rounded-xl transition-colors w-full">Batal</button>
-                <button type="button" onclick="closeModal('modalHapusAnggota')" class="px-5 py-2.5 text-white bg-red-500 hover:bg-red-600 font-semibold rounded-xl shadow-lg shadow-red-500/30 transition-colors w-full">Hapus</button>
+                <a id="btnHapusAnggota" href="#" class="px-5 py-2.5 text-white bg-red-500 hover:bg-red-600 font-semibold rounded-xl shadow-lg shadow-red-500/30 transition-colors w-full flex items-center justify-center">Hapus</a>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+function editAnggota(id, nama, alamat, no_telp, email, tanggal_daftar) {
+    document.getElementById('edit_id_anggota').value = id;
+    document.getElementById('edit_nama').value = nama;
+    document.getElementById('edit_alamat').value = alamat;
+    document.getElementById('edit_no_telp').value = no_telp;
+    document.getElementById('edit_email').value = email;
+    document.getElementById('edit_tanggal_daftar').value = tanggal_daftar;
+    openModal('modalEditAnggota');
+}
+
+function hapusAnggota(id) {
+    document.getElementById('btnHapusAnggota').href = "<?= BASEURL; ?>/anggota/hapus/" + id;
+    openModal('modalHapusAnggota');
+}
+</script>

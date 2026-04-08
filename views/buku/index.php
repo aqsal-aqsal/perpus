@@ -87,10 +87,10 @@
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-center gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="openModal('modalEditBuku')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 flex items-center justify-center transition-all shadow-sm">
+                                <button onclick="editBuku('<?= $b['id_buku']; ?>', '<?= addslashes($b['judul']); ?>', '<?= addslashes($b['penulis']); ?>', '<?= addslashes($b['penerbit']); ?>', '<?= $b['tahun_terbit']; ?>', '<?= $b['id_kategori'] ?? ''; ?>', '<?= $b['stok']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 flex items-center justify-center transition-all shadow-sm">
                                     <i class="ph-bold ph-pencil-simple text-sm"></i>
                                 </button>
-                                <button onclick="openModal('modalHapusBuku')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200 flex items-center justify-center transition-all shadow-sm">
+                                <button onclick="hapusBuku('<?= $b['id_buku']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200 flex items-center justify-center transition-all shadow-sm">
                                     <i class="ph-bold ph-trash text-sm"></i>
                                 </button>
                             </div>
@@ -187,11 +187,48 @@
             </button>
         </div>
         <div class="p-6 overflow-y-auto">
-            <p class="text-slate-500 text-sm mb-4">Ubah detail atribut buku melalui form di sini. (Form input dihilangkan untuk UI Mockup)</p>
-            <div class="mt-8 flex justify-end gap-3">
-                <button type="button" onclick="closeModal('modalEditBuku')" class="px-5 py-2.5 text-slate-500 bg-white border border-slate-200 hover:bg-slate-50 font-semibold rounded-xl transition-colors">Batal</button>
-                <button type="button" onclick="closeModal('modalEditBuku')" class="px-5 py-2.5 text-white bg-blue-600 hover:bg-blue-700 font-semibold rounded-xl shadow-lg shadow-blue-500/30 transition-colors">Perbarui</button>
-            </div>
+            <form action="<?= BASEURL; ?>/buku/edit" method="POST">
+                <input type="hidden" name="id_buku" id="edit_id_buku">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Judul Buku</label>
+                        <input type="text" name="judul" id="edit_judul" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Penulis</label>
+                        <input type="text" name="penulis" id="edit_penulis" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-1">Penerbit</label>
+                            <input type="text" name="penerbit" id="edit_penerbit" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-1">Tahun Terbit</label>
+                            <input type="number" name="tahun_terbit" id="edit_tahun_terbit" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-1">Kategori</label>
+                            <select name="id_kategori" id="edit_id_kategori" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all">
+                                <option value="">Pilih Kategori</option>
+                                <?php foreach ($data['kategori'] as $k): ?>
+                                    <option value="<?= $k['id_kategori']; ?>"><?= $k['nama_kategori']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-1">Stok Awal</label>
+                            <input type="number" name="stok" id="edit_stok" min="0" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all">
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-end gap-3">
+                    <button type="button" onclick="closeModal('modalEditBuku')" class="px-5 py-2.5 text-slate-500 bg-white border border-slate-200 hover:bg-slate-50 font-semibold rounded-xl transition-colors">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 text-white bg-blue-600 hover:bg-blue-700 font-semibold rounded-xl shadow-lg shadow-blue-500/30 transition-colors">Perbarui</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -209,8 +246,26 @@
             
             <div class="flex justify-center gap-3">
                 <button type="button" onclick="closeModal('modalHapusBuku')" class="px-5 py-2.5 text-slate-500 bg-white border border-slate-200 hover:bg-slate-50 font-semibold rounded-xl transition-colors w-full">Batal</button>
-                <button type="button" onclick="closeModal('modalHapusBuku')" class="px-5 py-2.5 text-white bg-red-500 hover:bg-red-600 font-semibold rounded-xl shadow-lg shadow-red-500/30 transition-colors w-full">Hapus</button>
+                <a id="btnHapusBuku" href="#" class="px-5 py-2.5 text-white bg-red-500 hover:bg-red-600 font-semibold rounded-xl shadow-lg shadow-red-500/30 transition-colors w-full flex justify-center items-center">Hapus</a>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+function editBuku(id, judul, penulis, penerbit, tahun_terbit, id_kategori, stok) {
+    document.getElementById('edit_id_buku').value = id;
+    document.getElementById('edit_judul').value = judul;
+    document.getElementById('edit_penulis').value = penulis;
+    document.getElementById('edit_penerbit').value = penerbit;
+    document.getElementById('edit_tahun_terbit').value = tahun_terbit;
+    document.getElementById('edit_id_kategori').value = id_kategori;
+    document.getElementById('edit_stok').value = stok;
+    openModal('modalEditBuku');
+}
+
+function hapusBuku(id) {
+    document.getElementById('btnHapusBuku').href = "<?= BASEURL; ?>/buku/hapus/" + id;
+    openModal('modalHapusBuku');
+}
+</script>

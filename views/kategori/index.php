@@ -53,10 +53,10 @@
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-center gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="openModal('modalEditKategori')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 flex items-center justify-center transition-all shadow-sm border-b-2">
+                                <button onclick="editKategori('<?= $k['id_kategori']; ?>', '<?= addslashes($k['nama_kategori']); ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 flex items-center justify-center transition-all shadow-sm border-b-2">
                                     <i class="ph-bold ph-pencil-simple text-sm"></i>
                                 </button>
-                                <button onclick="openModal('modalHapusKategori')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200 flex items-center justify-center transition-all shadow-sm border-b-2">
+                                <button onclick="hapusKategori('<?= $k['id_kategori']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200 flex items-center justify-center transition-all shadow-sm border-b-2">
                                     <i class="ph-bold ph-trash text-sm"></i>
                                 </button>
                             </div>
@@ -124,16 +124,17 @@
             </button>
         </div>
         <div class="p-6 overflow-y-auto">
-            <form action="" method="POST">
+            <form action="<?= BASEURL; ?>/kategori/edit" method="POST">
+                <input type="hidden" name="id_kategori" id="edit_id_kategori">
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-1">Nama Kategori</label>
-                        <input type="text" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all">
+                        <input type="text" name="nama_kategori" id="edit_nama_kategori" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all">
                     </div>
                 </div>
                 <div class="mt-8 flex justify-end gap-3">
                     <button type="button" onclick="closeModal('modalEditKategori')" class="px-5 py-2.5 text-slate-500 bg-white border border-slate-200 hover:bg-slate-50 font-semibold rounded-xl transition-colors">Batal</button>
-                    <button type="button" onclick="closeModal('modalEditKategori')" class="px-5 py-2.5 text-white bg-blue-600 hover:bg-blue-700 font-semibold rounded-xl shadow-lg shadow-blue-500/30 transition-colors">Simpan Perubahan</button>
+                    <button type="submit" class="px-5 py-2.5 text-white bg-blue-600 hover:bg-blue-700 font-semibold rounded-xl shadow-lg shadow-blue-500/30 transition-colors">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
@@ -153,8 +154,21 @@
             
             <div class="flex justify-center gap-3">
                 <button type="button" onclick="closeModal('modalHapusKategori')" class="px-5 py-2.5 text-slate-500 bg-white border border-slate-200 hover:bg-slate-50 font-semibold rounded-xl transition-colors w-full">Batal</button>
-                <button type="button" onclick="closeModal('modalHapusKategori')" class="px-5 py-2.5 text-white bg-red-500 hover:bg-red-600 font-semibold rounded-xl shadow-lg shadow-red-500/30 transition-colors w-full">Hapus</button>
+                <a id="btnHapusKategori" href="#" class="px-5 py-2.5 text-white bg-red-500 hover:bg-red-600 font-semibold rounded-xl shadow-lg shadow-red-500/30 transition-colors w-full flex items-center justify-center">Hapus</a>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+function editKategori(id, nama) {
+    document.getElementById('edit_id_kategori').value = id;
+    document.getElementById('edit_nama_kategori').value = nama;
+    openModal('modalEditKategori');
+}
+
+function hapusKategori(id) {
+    document.getElementById('btnHapusKategori').href = "<?= BASEURL; ?>/kategori/hapus/" + id;
+    openModal('modalHapusKategori');
+}
+</script>
