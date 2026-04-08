@@ -1,6 +1,6 @@
 <?php
 class App {
-    protected $controller = 'Auth'; // Default Controller is Auth
+    protected $controller = 'Home'; // Default Controller is Home
     protected $method = 'index';
     protected $params = [];
 
