@@ -55,4 +55,27 @@ class Peminjaman_model {
         
         return $this->db->rowCount();
     }
+
+    public function kembalikanBuku($id_peminjaman)
+    {
+        // Update status peminjaman
+        $this->db->query("UPDATE peminjaman SET status = 'dikembalikan', tanggal_kembali = CURRENT_DATE WHERE id_peminjaman = :id");
+        $this->db->bind('id', $id_peminjaman);
+        $this->db->execute();
+
+        // Get details to revert stock
+        $this->db->query("SELECT * FROM detail_peminjaman WHERE id_peminjaman = :id");
+        $this->db->bind('id', $id_peminjaman);
+        $details = $this->db->resultSet();
+
+        // Tambah stok buku
+        foreach ($details as $detail) {
+            $this->db->query("UPDATE buku SET stok = stok + :jumlah WHERE id_buku = :id_buku");
+            $this->db->bind('jumlah', $detail['jumlah']);
+            $this->db->bind('id_buku', $detail['id_buku']);
+            $this->db->execute();
+        }
+
+        return 1; // Return success
+    }
 }

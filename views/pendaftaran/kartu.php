@@ -18,12 +18,9 @@
             font-family: 'Inter', sans-serif;
             background: var(--bg-body);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
             margin: 0;
             padding: 2rem;
+            text-align: center; /* Center children inline */
         }
 
         .success-header {
@@ -46,11 +43,13 @@
         /* Card Container - Matching Reference Scale (appx 800x500) */
         .card-wrapper {
             animation: fadeInUp 1s ease 0.3s both;
-            margin-bottom: 3rem;
+            margin: 0 auto 3rem auto; /* To center it since body text-align is center */
+            display: inline-block; /* Prevent stretching */
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
             border-radius: 8px; /* Slight rounding on outer edge */
             overflow: hidden;
             background: white;
+            text-align: left; /* Reset text align for inner content */
         }
 
         .id-card {
@@ -60,7 +59,7 @@
             position: relative;
             overflow: hidden; /* To clip shapes */
             box-sizing: border-box;
-            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><path d="M 0 0 L 100 0 L 100 100 L 0 100 Z" fill="none" stroke="%23f1f5f9" stroke-width="1"/></svg>');
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0 0 L 100 0 L 100 100 L 0 100 Z' fill='none' stroke='%23f1f5f9' stroke-width='1'/%3E%3C/svg%3E");
             background-size: 50px 50px;
         }
 
@@ -262,6 +261,7 @@
         .actions {
             display: flex;
             gap: 1rem;
+            justify-content: center;
             animation: fadeInUp 1s ease 0.6s both;
         }
 
@@ -421,22 +421,34 @@
     <script>
         function downloadCard() {
             const element = document.getElementById('card-download');
-            // Hide shadow during export to prevent rendering artifacts
+            
+            // Backup inline styles
             const originalShadow = element.style.boxShadow;
+            const originalAnimation = element.style.animation;
+            
+            // Hide shadow and forcefully remove any CSS scaling from media queries during export
             element.style.boxShadow = 'none';
+            element.style.transform = 'none';
+            // CRITICAL: Disable animation so the cloned element doesn't start at opacity: 0
+            element.style.animation = 'none';
 
             const opt = {
-                margin:       [0.2, 0.2, 0.2, 0.2], // minimal margin
+                margin:       10, 
                 filename:     'kartu-anggota-<?= $data['anggota']['id_anggota']; ?>.pdf',
-                image:        { type: 'jpeg', quality: 1 },
-                html2canvas:  { scale: 3, useCORS: true, backgroundColor: null }, // useCORS for the photo
-                jsPDF:        { unit: 'px', format: [840, 540], orientation: 'landscape' } // perfectly scaled to dimensions
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: true, backgroundColor: '#ffffff', scrollY: 0, scrollX: 0 }, 
+                jsPDF:        { unit: 'px', format: [820, 520], orientation: 'landscape' } 
             };
 
-            html2pdf().set(opt).from(element).save().then(() => {
-                // Restore shadow
-                element.style.boxShadow = originalShadow;
-            });
+            // Allow the browser a tiny moment to reflow the layout without the scale transform
+            setTimeout(() => {
+                html2pdf().set(opt).from(element).save().then(() => {
+                    // Restore original inline styles (re-enables media queries)
+                    element.style.boxShadow = originalShadow;
+                    element.style.transform = '';
+                    element.style.animation = originalAnimation;
+                });
+            }, 150);
         }
     </script>
 </body>

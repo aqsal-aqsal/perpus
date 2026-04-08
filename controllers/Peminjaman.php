@@ -29,4 +29,15 @@ class Peminjaman extends Controller {
         header('Location: ' . BASEURL . '/peminjaman');
         exit;
     }
+
+    public function kembali($id)
+    {
+        if ($this->model('Peminjaman_model')->kembalikanBuku($id) > 0) {
+            Flasher::setFlash('berhasil', 'dikembalikan', 'success');
+        } else {
+            Flasher::setFlash('gagal', 'dikembalikan', 'danger');
+        }
+        header('Location: ' . BASEURL . '/peminjaman');
+        exit;
+    }
 }

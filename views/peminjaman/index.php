@@ -85,7 +85,7 @@
                                     <i class="ph-bold ph-list-magnifying-glass text-sm"></i>
                                 </button>
                                 <?php if ($p['status'] == 'dipinjam'): ?>
-                                <button onclick="openModal('modalKembaliPeminjaman')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 flex items-center justify-center transition-all shadow-sm border-b-2" title="Proses Pengembalian">
+                                <button onclick="prosesKembali('<?= $p['id_peminjaman']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 flex items-center justify-center transition-all shadow-sm border-b-2" title="Proses Pengembalian">
                                     <i class="ph-bold ph-check-square-offset text-sm"></i>
                                 </button>
                                 <?php endif; ?>
@@ -201,8 +201,15 @@
             
             <div class="flex justify-center gap-3">
                 <button type="button" onclick="closeModal('modalKembaliPeminjaman')" class="px-5 py-2.5 text-slate-500 bg-white border border-slate-200 hover:bg-slate-50 font-semibold rounded-xl transition-colors w-full">Kembali</button>
-                <button type="button" onclick="closeModal('modalKembaliPeminjaman')" class="px-5 py-2.5 text-white bg-emerald-500 hover:bg-emerald-600 font-semibold rounded-xl shadow-lg shadow-emerald-500/30 transition-colors w-full">Proses Finalisasi</button>
+                <a id="btnKembaliFinal" href="#" class="px-5 py-2.5 text-white bg-emerald-500 hover:bg-emerald-600 font-semibold rounded-xl shadow-lg shadow-emerald-500/30 transition-colors w-full flex items-center justify-center">Proses Finalisasi</a>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+function prosesKembali(id) {
+    document.getElementById('btnKembaliFinal').href = "<?= BASEURL; ?>/peminjaman/kembali/" + id;
+    openModal('modalKembaliPeminjaman');
+}
+</script>

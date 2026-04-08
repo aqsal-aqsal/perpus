@@ -6,7 +6,7 @@ $active = strtolower($url[0]);
 <!-- Sidebar -->
 <aside class="w-64 bg-white border-r border-slate-200 flex flex-col h-full shadow-sm hidden md:flex z-10 transition-all duration-300">
     <div class="h-16 flex items-center px-6 border-b border-slate-100">
-        <i class="ph-fill ph-book-open-text text-blue-600 text-3xl mr-3"></i>
+        <img src="<?= BASEURL; ?>/public/img/logo-kapuas.png" alt="Logo" class="w-8 h-8 object-contain mr-3">
         <span class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">E-Perpus</span>
     </div>
     

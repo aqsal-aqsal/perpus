@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $data['judul']; ?></title>
+    <link rel="icon" type="image/png" href="<?= BASEURL; ?>/public/img/logo-kapuas.png">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -620,11 +621,11 @@
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 15px;
         }
 
-        .footer-brand i {
-            color: var(--primary-light);
+        .footer-brand img {
+            height: 40px;
         }
 
         .footer-brand p {
@@ -750,7 +751,7 @@
     <nav class="navbar" id="navbar">
         <div class="container">
             <a href="#" class="navbar-brand">
-                <i class="fas fa-book-reader"></i> E-PERPUS
+                <img src="<?= BASEURL; ?>/public/img/logo-kapuas.png" alt="Logo Kapuas" style="height: 35px;"> E-PERPUS
             </a>
             <ul class="navbar-nav">
                 <li><a href="#beranda" class="nav-link">Beranda</a></li>
@@ -958,7 +959,10 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand" data-aos="fade-up">
-                    <h3><i class="fas fa-book-reader"></i> E-PERPUS</h3>
+                    <h3>
+                    <img src="<?= BASEURL; ?>/public/img/logo-kapuas.png" alt="Logo Kapuas">
+                    E-PERPUS DISPERSIP
+                </h3>
                     <p>Dinas Perpustakaan dan Kearsipan (DISPERSIP) Kabupaten Kapuas. Mewujudkan masyarakat Kapuas yang cerdas dan berbudaya membaca.</p>
                 </div>
                 <div class="footer-links" data-aos="fade-up" data-aos-delay="100">

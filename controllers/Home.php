@@ -1,9 +1,7 @@
 <?php
 class Home extends Controller {
     public function index() {
-        if(isset($_SESSION['user_ses'])) {
-            $this->redirect('dashboard');
-        }
+        // Removed auto-redirect when logged in to allow visiting landing page
 
         $data['judul'] = 'E-PERPUS DISPERSIP KAPUAS';
         $this->view('home/index', $data);
