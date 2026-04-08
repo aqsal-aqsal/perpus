@@ -26,7 +26,7 @@
             --text-main: #0f172a;
             --text-muted: #64748b;
             --bg-color: #ffffff;
-            --font-heading: 'Outfit', sans-serif;
+            --font-heading: 'Inter', sans-serif;
             --font-body: 'Inter', sans-serif;
         }
 
@@ -758,7 +758,10 @@
                 <li><a href="#fitur" class="nav-link">Fitur</a></li>
                 <li><a href="#tentang" class="nav-link">Tentang</a></li>
             </ul>
-            <a href="<?= BASEURL; ?>/auth" class="btn btn-primary">Masuk Aplikasi</a>
+            <div style="display: flex; gap: 1rem;">
+                <a href="<?= BASEURL; ?>/pendaftaran" class="btn btn-outline" style="padding: 0.6rem 1.5rem; font-size: 0.9rem;">Daftar Anggota</a>
+                <a href="<?= BASEURL; ?>/auth" class="btn btn-primary" style="padding: 0.6rem 1.5rem; font-size: 0.9rem;">Masuk Aplikasi</a>
+            </div>
         </div>
     </nav>
 
@@ -773,7 +776,7 @@
                 <p data-aos="fade-up" data-aos-delay="400">Jelajahi dunia pengetahuan dalam genggaman Anda. Akses ribuan koleksi buku digital dan tingkatkan budaya literasi di Kabupaten Kapuas dengan mudah dan cepat.</p>
                 <div class="hero-btns" data-aos="fade-up" data-aos-delay="600">
                     <a href="<?= BASEURL; ?>/auth" class="btn btn-primary">Mulai Membaca</a>
-                    <a href="#tentang" class="btn btn-outline">Pelajari Lebih Lanjut</a>
+                    <a href="<?= BASEURL; ?>/pendaftaran" class="btn btn-outline">Daftar Anggota</a>
                 </div>
             </div>
             

@@ -80,7 +80,10 @@
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-center gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="editAnggota('<?= $a['id_anggota']; ?>', '<?= addslashes($a['nama']); ?>', '<?= addslashes($a['alamat']); ?>', '<?= addslashes($a['no_telp']); ?>', '<?= addslashes($a['email']); ?>', '<?= $a['tanggal_daftar']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 flex items-center justify-center transition-all shadow-sm border-b-2">
+                                <a href="<?= BASEURL; ?>/pendaftaran/kartu/<?= $a['id_anggota']; ?>" target="_blank" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-green-50 hover:text-green-600 hover:border-green-200 flex items-center justify-center transition-all shadow-sm border-b-2" title="Cetak Kartu">
+                                    <i class="ph-bold ph-printer text-sm"></i>
+                                </a>
+                                <button onclick="editAnggota('<?= $a['id_anggota']; ?>', '<?= addslashes($a['nama']); ?>', '<?= addslashes($a['alamat']); ?>', '<?= addslashes($a['no_telp']); ?>', '<?= addslashes($a['email']); ?>', '<?= $a['tanggal_daftar']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 flex items-center justify-center transition-all shadow-sm border-b-2" title="Edit">
                                     <i class="ph-bold ph-pencil-simple text-sm"></i>
                                 </button>
                                 <button onclick="hapusAnggota('<?= $a['id_anggota']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200 flex items-center justify-center transition-all shadow-sm border-b-2">
