@@ -49,7 +49,7 @@
                     <tr class="hover:bg-indigo-50/30 transition-colors group cursor-default">
                         <td class="px-6 py-4">
                             <div class="text-xs font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded w-fit text-center border border-slate-100">
-                                #<?= str_pad($a['id_anggota'], 3, '0', STR_PAD_LEFT); ?>
+                                #<?= str_pad($a['id_user'], 3, '0', STR_PAD_LEFT); ?>
                             </div>
                         </td>
                         <td class="px-6 py-4">
@@ -80,13 +80,13 @@
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-center gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                                <a href="<?= BASEURL; ?>/pendaftaran/kartu/<?= $a['id_anggota']; ?>" target="_blank" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-green-50 hover:text-green-600 hover:border-green-200 flex items-center justify-center transition-all shadow-sm border-b-2" title="Cetak Kartu">
+                                <a href="<?= BASEURL; ?>/pendaftaran/kartu/<?= $a['id_user']; ?>" target="_blank" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-green-50 hover:text-green-600 hover:border-green-200 flex items-center justify-center transition-all shadow-sm border-b-2" title="Cetak Kartu">
                                     <i class="ph-bold ph-printer text-sm"></i>
                                 </a>
-                                <button onclick="editAnggota('<?= $a['id_anggota']; ?>', '<?= addslashes($a['nama']); ?>', '<?= addslashes($a['alamat']); ?>', '<?= addslashes($a['no_telp']); ?>', '<?= addslashes($a['email']); ?>', '<?= $a['tanggal_daftar']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 flex items-center justify-center transition-all shadow-sm border-b-2" title="Edit">
+                                <button onclick="editAnggota('<?= $a['id_user']; ?>', '<?= addslashes($a['nama']); ?>', '<?= addslashes($a['alamat']); ?>', '<?= addslashes($a['no_telp']); ?>', '<?= addslashes($a['email']); ?>', '<?= $a['tanggal_daftar']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 flex items-center justify-center transition-all shadow-sm border-b-2" title="Edit">
                                     <i class="ph-bold ph-pencil-simple text-sm"></i>
                                 </button>
-                                <button onclick="hapusAnggota('<?= $a['id_anggota']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200 flex items-center justify-center transition-all shadow-sm border-b-2">
+                                <button onclick="hapusAnggota('<?= $a['id_user']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200 flex items-center justify-center transition-all shadow-sm border-b-2">
                                     <i class="ph-bold ph-trash text-sm"></i>
                                 </button>
                             </div>

@@ -1,716 +1,464 @@
-<!DOCTYPE html>
-<html lang="id">
+<?php $this->view('templates/header_auth', $data); ?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $data['judul']; ?></title>
-    <link rel="icon" type="image/png" href="<?= BASEURL; ?>/public/img/logo-kapuas.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --bg: #f8fafc;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-        }
+<div class="w-full max-w-2xl p-4 my-8">
+    <div class="bg-white shadow-2xl rounded-3xl mx-auto p-8 relative overflow-hidden ring-1 ring-gray-900/5 min-h-[600px] flex flex-col">
+        <!-- Decorative blobs -->
+        <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
+        <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob animation-delay-2000"></div>
+        
+        <div class="text-center mb-10 relative z-10 pt-4">
+            <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 mb-2">Pendaftaran Anggota</h1>
+            <p class="text-slate-500 text-sm font-medium">Lengkapi biodata KTP untuk akses penuh layanan E-Perpus</p>
+        </div>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text-main);
-            line-height: 1.6;
-        }
-
-        h1,
-        h2,
-        h3 {
-            font-family: 'Inter', sans-serif;
-            font-weight: 700;
-        }
-
-        .navbar {
-            background: white;
-            padding: 1rem 5%;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .navbar-brand {
-            font-family: 'Inter', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .panel {
-            background: white;
-            border-radius: 20px;
-            padding: 2.5rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-            display: none;
-            /* Controlled via JS */
-            animation: fadeIn 0.4s ease;
-        }
-
-        .panel.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .panel-header {
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .panel-header h2 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .panel-header p {
-            color: var(--text-muted);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        /* Camera & Upload Options */
-        .photo-options {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            justify-content: center;
-        }
-
-        .option-btn {
-            flex: 1;
-            padding: 0.8rem;
-            border-radius: 10px;
-            border: 2px solid #cbd5e1;
-            background: white;
-            color: var(--text-muted);
-            font-weight: 600;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 1rem;
-        }
-
-        .option-btn.active {
-            border-color: var(--primary);
-            background: #eff6ff;
-            color: var(--primary);
-        }
-
-        /* Camera Box */
-        .camera-container {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 4/3;
-            background: #000;
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 1.5rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #webcam {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        #canvas {
-            display: none;
-        }
-
-        #snapshot-preview {
-            display: none;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 10;
-        }
-
-        .camera-btn {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 20;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: white;
-            border: 4px solid var(--primary);
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: transform 0.2s;
-        }
-
-        .camera-btn:hover {
-            transform: translateX(-50%) scale(1.1);
-        }
-
-        .camera-btn i {
-            color: var(--primary);
-            font-size: 1.5rem;
-        }
-
-        /* Upload Box */
-        .upload-container {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 4/3;
-            background: #f8fafc;
-            border: 2px dashed #cbd5e1;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .upload-container.active {
-            display: flex;
-        }
-
-        .upload-container input[type="file"] {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-            z-index: 20;
-        }
-
-        .upload-placeholder {
-            text-align: center;
-            color: var(--text-muted);
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        .upload-placeholder i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: #cbd5e1;
-        }
-
-        #upload-preview {
-            display: none;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 15;
-        }
-
-        .btn {
-            display: inline-block;
-            width: 100%;
-            padding: 1rem;
-            border-radius: 10px;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
-            cursor: pointer;
-            text-align: center;
-            border: none;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-outline {
-            background: white;
-            color: var(--text-muted);
-            border: 1px solid #cbd5e1;
-            font-weight: 500;
-        }
-
-        .btn-outline:hover {
-            background: #f8fafc;
-            color: var(--text-main);
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.8);
-            z-index: 1000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 1rem;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Stepper indicator */
-        .stepper {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .step {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: #cbd5e1;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 600;
-        }
-
-        .step.active {
-            background: var(--primary);
-        }
-
-        .step-line {
-            width: 50px;
-            height: 2px;
-            background: #cbd5e1;
-        }
-
-        .step-line.active {
-            background: var(--primary);
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 0 1rem;
-            }
-
-            .panel {
-                padding: 1.5rem;
-            }
-        }
-    </style>
-    <link rel="icon" href="<?= BASEURL; ?>/public/img/logo-kapuas.png" type="image/png">
-</head>
-
-<body>
-    <nav class="navbar">
-        <a href="<?= BASEURL; ?>" class="navbar-brand">
-            <img src="<?= BASEURL; ?>/public/img/logo-kapuas.png" alt="Logo" style="height: 30px; vertical-align: middle; margin-right: 10px;"> E-PERPUS
-        </a>
-        <a href="<?= BASEURL; ?>" style="color: var(--text-muted); text-decoration:none;"><i class="fas fa-arrow-left"></i> Kembali</a>
-    </nav>
-
-    <div class="container">
-
-        <div class="stepper">
-            <div class="step active" id="indicator-1">1</div>
-            <div class="step-line" id="line-1"></div>
-            <div class="step" id="indicator-2">2</div>
+        <!-- Stepper -->
+        <div class="relative z-10 mb-10">
+            <div class="flex items-center justify-center gap-4">
+                <div id="indicator-1" class="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-bold shadow-lg shadow-blue-500/30 transition-all duration-300">1</div>
+                <div id="line-1" class="w-16 h-1 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="line-1-progress" class="w-0 h-full bg-gradient-to-r from-blue-500 to-indigo-600 transition-all duration-500"></div>
+                </div>
+                <div id="indicator-2" class="w-10 h-10 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center font-bold transition-all duration-300">2</div>
+            </div>
+            <div class="flex justify-center gap-16 mt-2">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-blue-600 ml-2">Biodata</span>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Foto KTP</span>
+            </div>
         </div>
 
         <!-- Step 1: Form Panel -->
-        <div class="panel active" id="step-1">
-            <div class="panel-header">
-                <h2>Biodata Diri</h2>
-                <p>Isi data diri Anda terlebih dahulu.</p>
-            </div>
-            <form id="registerForm">
-                <div class="form-group">
-                    <label>Nama Lengkap</label>
-                    <input type="text" id="nama" class="form-control" required placeholder="Masukkan nama lengkap">
+        <div class="flex-grow flex flex-col relative z-10 transition-all duration-500" id="step-1">
+            <form id="registerForm" class="space-y-6">
+                <!-- Group: Identitas Utama -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="block text-slate-700 text-sm font-bold ml-1">NIK (Nomor Induk Kependudukan)</label>
+                        <div class="relative group">
+                            <i class="ph ph-identification-card absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors"></i>
+                            <input type="text" id="nik" class="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all text-slate-700" required placeholder="16 digit NIK" maxlength="16">
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-slate-700 text-sm font-bold ml-1">Nama Lengkap</label>
+                        <div class="relative group">
+                            <i class="ph ph-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors"></i>
+                            <input type="text" id="nama" class="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all text-slate-700" required placeholder="Sesuai KTP">
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>No. Telepon / WhatsApp</label>
-                    <input type="text" id="no_telp" class="form-control" required placeholder="Contoh: 08123456789">
+
+                <!-- Group: Kelahiran -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="block text-slate-700 text-sm font-bold ml-1">Tempat Lahir</label>
+                        <input type="text" id="tempat_lahir" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all text-slate-700" required placeholder="Kabupaten/Kota">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-slate-700 text-sm font-bold ml-1">Tanggal Lahir</label>
+                        <input type="date" id="tanggal_lahir" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all text-slate-700" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" id="email" class="form-control" required placeholder="nama@email.com">
+
+                <!-- Group: Profil -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="block text-slate-700 text-sm font-bold ml-1">Jenis Kelamin</label>
+                        <select id="jenis_kelamin" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all text-slate-700 appearance-none cursor-pointer" required>
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-slate-700 text-sm font-bold ml-1">Agama</label>
+                        <select id="agama" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all text-slate-700 appearance-none cursor-pointer" required>
+                            <option value="Islam">Islam</option>
+                            <option value="Kristen">Kristen</option>
+                            <option value="Katolik">Katolik</option>
+                            <option value="Hindu">Hindu</option>
+                            <option value="Budha">Budha</option>
+                            <option value="Khonghucu">Khonghucu</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Alamat Lengkap</label>
-                    <textarea id="alamat" class="form-control" rows="3" required
-                        placeholder="Masukkan alamat domisili"></textarea>
+
+                <div class="space-y-2">
+                    <label class="block text-slate-700 text-sm font-bold ml-1">Alamat Lengkap</label>
+                    <textarea id="alamat" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all text-slate-700 resize-none" rows="2" required placeholder="Alamat sesuai KTP"></textarea>
                 </div>
-                <button type="button" class="btn btn-primary" id="btn-next">
-                    Lanjutkan<i class="fas fa-arrow-right ml-2"></i>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="block text-slate-700 text-sm font-bold ml-1">Pekerjaan</label>
+                        <input type="text" id="pekerjaan" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all text-slate-700" required placeholder="Contoh: Pelajar/Mahasiswa">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-slate-700 text-sm font-bold ml-1">No. Telp / WhatsApp</label>
+                        <div class="relative group">
+                            <i class="ph ph-whatsapp-logo absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500 transition-colors"></i>
+                            <input type="text" id="no_telp" class="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all text-slate-700" required placeholder="08123xxxx">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-100">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Pengaturan Akun</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-slate-700 text-sm font-bold ml-1">Username</label>
+                            <input type="text" id="username" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all text-slate-700" required placeholder="Untuk login">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-slate-700 text-sm font-bold ml-1">Password</label>
+                            <input type="password" id="password" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 outline-none transition-all text-slate-700" required placeholder="Min. 6 karakter">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-4 rounded-xl shadow-xl shadow-blue-500/30 focus:outline-none transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-2 group mt-8" id="btn-next">
+                    Lanjutkan ke Foto
+                    <i class="ph ph-arrow-right font-bold transition-transform group-hover:translate-x-1"></i>
                 </button>
             </form>
         </div>
 
         <!-- Step 2: Camera/Upload Panel -->
-        <div class="panel" id="step-2">
-            <div class="panel-header">
-                <h2>Verifikasi Wajah</h2>
-                <p>Tambahkan foto untuk kartu perpustakaan digital Anda.</p>
+        <div class="hidden flex-grow flex flex-col relative z-10 animate-fade-in" id="step-2">
+            <div class="text-center mb-8">
+                <p class="text-slate-500 text-sm">Ambil foto KTP Anda melalui kamera atau unggah file secara manual.</p>
             </div>
 
-            <div class="photo-options">
-                <button type="button" class="option-btn active" id="opt-camera"><i class="fas fa-camera mr-2"></i>
-                    Gunakan Kamera</button>
-                <button type="button" class="option-btn" id="opt-upload"><i class="fas fa-upload mr-2"></i> Unggah
-                    Foto</button>
+            <div class="flex p-1 bg-slate-100 rounded-2xl mb-8">
+                <button type="button" class="flex-1 py-3 px-4 rounded-[14px] text-sm font-bold transition-all duration-300 bg-white text-blue-600 shadow-sm flex items-center justify-center gap-2" id="opt-camera">
+                    <i class="ph ph-camera"></i> Gunakan Kamera
+                </button>
+                <button type="button" class="flex-1 py-3 px-4 rounded-[14px] text-sm font-bold transition-all duration-300 text-slate-500 hover:text-slate-700 flex items-center justify-center gap-2" id="opt-upload">
+                    <i class="ph ph-upload-simple"></i> Unggah File
+                </button>
             </div>
 
             <!-- Webcam Area -->
-            <div class="camera-container" id="camera-area">
-                <video id="webcam" autoplay playsinline></video>
-                <canvas id="canvas"></canvas>
-                <img id="snapshot-preview" alt="Snapshot Preview">
+            <div class="relative w-full aspect-[4/3] bg-slate-900 rounded-3xl overflow-hidden shadow-2xl group border-4 border-white" id="camera-area">
+                <video id="webcam" autoplay playsinline class="w-full h-full object-cover"></video>
+                <canvas id="canvas" class="hidden"></canvas>
+                <img id="snapshot-preview" alt="Snapshot Preview" class="hidden absolute inset-0 w-full h-full object-cover z-10">
 
-                <button type="button" class="camera-btn" id="btn-snap" title="Ambil Foto">
-                    <i class="fas fa-camera"></i>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                
+                <button type="button" class="absolute bottom-6 left-1/2 -translate-x-1/2 w-16 h-16 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-2xl transform transition-all active:scale-90 hover:scale-110 z-20" id="btn-snap">
+                    <i class="ph ph-camera text-2xl font-bold"></i>
                 </button>
             </div>
 
             <!-- Upload Area -->
-            <div class="upload-container" id="upload-area">
-                <div class="upload-placeholder" id="upload-placeholder">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>Klik di sini untuk memilih foto<br><small>(Format: JPG, PNG, max 2MB)</small></p>
+            <div class="hidden relative w-full aspect-[4/3] bg-slate-50 rounded-3xl overflow-hidden border-2 border-dashed border-slate-300 flex flex-col items-center justify-center transition-all hover:bg-slate-100 hover:border-blue-400 group cursor-pointer" id="upload-area">
+                <div class="text-center" id="upload-placeholder">
+                    <div class="w-20 h-20 rounded-3xl bg-blue-50 text-blue-500 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="ph-fill ph-cloud-arrow-up text-4xl"></i>
+                    </div>
+                    <p class="font-bold text-slate-700">Pilih Foto KTP</p>
+                    <p class="text-xs text-slate-400 mt-1">Format: JPG, PNG, Max 2MB</p>
                 </div>
-                <input type="file" id="file-input" accept="image/*">
-                <img id="upload-preview" alt="Upload Preview">
+                <input type="file" id="file-input" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
+                <img id="upload-preview" alt="Upload Preview" class="hidden absolute inset-0 w-full h-full object-cover">
             </div>
 
-            <button type="button" class="btn btn-outline" id="btn-retake"
-                style="display:none; margin-bottom: 1rem; width: 100%;">
-                <i class="fas fa-redo"></i> Ulangi Foto
+            <!-- Retake Button -->
+            <button type="button" class="hidden w-full mt-6 py-3 text-slate-500 hover:text-red-500 font-bold flex items-center justify-center gap-2 transition-colors" id="btn-retake">
+                <i class="ph ph-arrow-counter-clockwise"></i> Ambil Ulang Foto
             </button>
 
-            <div class="btn-group">
-                <button type="button" class="btn btn-outline" id="btn-prev">
-                    <i class="fas fa-arrow-left mr-2"></i> Kembali
+            <div class="mt-auto pt-8 flex gap-4">
+                <button type="button" class="flex-1 py-4 px-4 rounded-xl border border-slate-200 text-slate-500 font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2" id="btn-prev">
+                    <i class="ph ph-arrow-left"></i> Kembali
                 </button>
-                <button type="button" class="btn btn-primary" id="btn-register">
-                    <i class="fas fa-user-plus"></i> Daftar Sekarang
+                <button type="button" class="flex-[2] py-4 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold shadow-xl shadow-blue-500/30 hover:opacity-90 transition-all flex items-center justify-center gap-2" id="btn-register">
+                    Selesaikan Pendaftaran <i class="ph ph-user-plus font-bold"></i>
                 </button>
             </div>
         </div>
     </div>
 
-    <div class="loading-overlay" id="loading">
-        <div class="spinner"></div>
-        <h3>Memproses Pendaftaran...</h3>
+    <!-- Back Link -->
+    <div class="mt-8 text-center">
+        <a href="<?= BASEURL; ?>" class="text-slate-400 hover:text-blue-600 text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 group">
+            <i class="ph ph-arrow-left transition-transform duration-200 group-hover:-translate-x-1"></i>
+            Kembali ke Beranda
+        </a>
     </div>
+</div>
 
-    <script>
-        // DOM Elements
-        const step1 = document.getElementById('step-1');
-        const step2 = document.getElementById('step-2');
-        const btnNext = document.getElementById('btn-next');
-        const btnPrev = document.getElementById('btn-prev');
-        const ind1 = document.getElementById('indicator-1');
-        const line1 = document.getElementById('line-1');
-        const ind2 = document.getElementById('indicator-2');
+<!-- Loading Overlay -->
+<div class="fixed inset-0 z-[100] hidden items-center justify-center" id="loading">
+    <div class="absolute inset-0 bg-white/80 backdrop-blur-md"></div>
+    <div class="relative z-10 flex flex-col items-center">
+        <div class="w-16 h-16 border-4 border-blue-50 border-t-blue-600 rounded-full animate-spin"></div>
+        <h3 class="mt-6 font-bold text-slate-800 text-lg">Memproses Pendaftaran...</h3>
+        <p class="text-slate-500 text-sm">Mohon tunggu sebentar</p>
+    </div>
+</div>
 
-        const optCamera = document.getElementById('opt-camera');
-        const optUpload = document.getElementById('opt-upload');
-        const cameraArea = document.getElementById('camera-area');
-        const uploadArea = document.getElementById('upload-area');
+<style>
+    @keyframes fade-in {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
+    
+    @keyframes blob {
+        0% { transform: translate(0px, 0px) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 20px) scale(0.9); }
+        100% { transform: translate(0px, 0px) scale(1); }
+    }
+    .animate-blob { animation: blob 7s infinite; }
+    .animation-delay-2000 { animation-delay: 2s; }
 
-        const video = document.getElementById('webcam');
-        const canvas = document.getElementById('canvas');
-        const snapBtn = document.getElementById('btn-snap');
-        const retakeBtn = document.getElementById('btn-retake');
-        const snapshotPreview = document.getElementById('snapshot-preview');
+    /* Hide default radio circle */
+    select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 1rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+    }
+</style>
 
-        const fileInput = document.getElementById('file-input');
-        const uploadPreview = document.getElementById('upload-preview');
-        const uploadPlaceholder = document.getElementById('upload-placeholder');
+<script>
+    // DOM Elements
+    const step1 = document.getElementById('step-1');
+    const step2 = document.getElementById('step-2');
+    const btnNext = document.getElementById('btn-next');
+    const btnPrev = document.getElementById('btn-prev');
+    const ind1 = document.getElementById('indicator-1');
+    const ind2 = document.getElementById('indicator-2');
+    const progressLine = document.getElementById('line-1-progress');
 
-        const registerBtn = document.getElementById('btn-register');
-        const loading = document.getElementById('loading');
+    const optCamera = document.getElementById('opt-camera');
+    const optUpload = document.getElementById('opt-upload');
+    const cameraArea = document.getElementById('camera-area');
+    const uploadArea = document.getElementById('upload-area');
 
-        let photoData = null;
-        let streamActive = null;
-        let currentMode = 'camera'; // camera or upload
+    const video = document.getElementById('webcam');
+    const canvas = document.getElementById('canvas');
+    const snapBtn = document.getElementById('btn-snap');
+    const retakeBtn = document.getElementById('btn-retake');
+    const snapshotPreview = document.getElementById('snapshot-preview');
 
-        // Navigation Step 1 to 2
-        btnNext.addEventListener('click', () => {
-            const nama = document.getElementById('nama').value.trim();
-            const no_telp = document.getElementById('no_telp').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const alamat = document.getElementById('alamat').value.trim();
+    const fileInput = document.getElementById('file-input');
+    const uploadPreview = document.getElementById('upload-preview');
+    const uploadPlaceholder = document.getElementById('upload-placeholder');
 
-            if (!nama || !no_telp || !email || !alamat) {
-                alert("Harap lengkapi semua biodata terlebih dahulu!");
-                return;
-            }
+    const registerBtn = document.getElementById('btn-register');
+    const loading = document.getElementById('loading');
 
-            step1.classList.remove('active');
-            step2.classList.add('active');
-            line1.classList.add('active');
-            ind2.classList.add('active');
+    let photoData = null;
+    let streamActive = null;
+    let currentMode = 'camera';
 
-            if (currentMode === 'camera' && !photoData) {
-                initWebcam();
+    // Navigation Step 1 to 2
+    btnNext.addEventListener('click', () => {
+        const requiredInputs = ['nik', 'nama', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'no_telp', 'username', 'password'];
+        let isValid = true;
+        
+        requiredInputs.forEach(id => {
+            const input = document.getElementById(id);
+            if (!input.value.trim()) {
+                input.classList.add('border-red-500', 'bg-red-50');
+                isValid = false;
+            } else {
+                input.classList.remove('border-red-500', 'bg-red-50');
             }
         });
 
-        // Navigation Step 2 to 1
-        btnPrev.addEventListener('click', () => {
-            step2.classList.remove('active');
-            step1.classList.add('active');
-            line1.classList.remove('active');
-            ind2.classList.remove('active');
-            stopWebcam();
-        });
+        if (!isValid) {
+            return alert("Harap lengkapi semua data identitas dan akun.");
+        }
 
-        // Toggle Option
-        optCamera.addEventListener('click', () => {
-            currentMode = 'camera';
-            optCamera.classList.add('active');
-            optUpload.classList.remove('active');
-            cameraArea.style.display = 'flex';
-            uploadArea.classList.remove('active');
+        const nik = document.getElementById('nik').value.trim();
+        if (nik.length !== 16) {
+            return alert("NIK harus berjumlah 16 digit!");
+        }
 
-            photoData = null;
-            resetCameraView();
-            resetUploadView();
+        // Transition to Step 2
+        step1.classList.add('hidden');
+        step2.classList.remove('hidden');
+        
+        // Update Stepper UI
+        ind1.classList.remove('bg-blue-600', 'shadow-blue-500/30');
+        ind1.classList.add('bg-emerald-500', 'shadow-emerald-500/30');
+        ind1.innerHTML = '<i class="ph ph-check text-xl"></i>';
+        
+        progressLine.classList.remove('w-0');
+        progressLine.classList.add('w-full');
+        
+        ind2.classList.remove('bg-slate-100', 'text-slate-400');
+        ind2.classList.add('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30');
 
+        if (currentMode === 'camera' && !photoData) {
             initWebcam();
-        });
+        }
+    });
 
-        optUpload.addEventListener('click', () => {
-            currentMode = 'upload';
-            optUpload.classList.add('active');
-            optCamera.classList.remove('active');
-            uploadArea.classList.add('active');
-            cameraArea.style.display = 'none';
+    // Navigation Step 2 to 1
+    btnPrev.addEventListener('click', () => {
+        step2.classList.add('hidden');
+        step1.classList.remove('hidden');
+        
+        // Reset Stepper UI
+        ind1.classList.add('bg-blue-600', 'shadow-blue-500/30');
+        ind1.classList.remove('bg-emerald-500', 'shadow-emerald-500/30');
+        ind1.innerHTML = '1';
+        
+        progressLine.classList.add('w-0');
+        progressLine.classList.remove('w-full');
+        
+        ind2.classList.add('bg-slate-100', 'text-slate-400');
+        ind2.classList.remove('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-500/30');
+        
+        stopWebcam();
+    });
 
-            photoData = null;
-            resetUploadView();
-            resetCameraView();
+    // Toggle Modes
+    optCamera.addEventListener('click', () => {
+        currentMode = 'camera';
+        toggleModeUI(optCamera, optUpload, cameraArea, uploadArea);
+        initWebcam();
+    });
 
-            stopWebcam();
-        });
+    optUpload.addEventListener('click', () => {
+        currentMode = 'upload';
+        toggleModeUI(optUpload, optCamera, uploadArea, cameraArea);
+        stopWebcam();
+    });
 
-        // Webcam logic
-        async function initWebcam() {
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                alert("Browser Anda tidak mendukung akses kamera. Pastikan menggunakan HTTPS atau localhost.");
-                return;
-            }
-            try {
-                streamActive = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-                video.srcObject = streamActive;
-            } catch (err) {
-                console.error("Error accessing webcam: ", err);
-                alert("Tidak dapat mengakses kamera. Tolong izinkan akses kamera di pengaturan browser.");
-            }
+    function toggleModeUI(activeBtn, inactiveBtn, activeArea, inactiveArea) {
+        activeBtn.classList.add('bg-white', 'text-blue-600', 'shadow-sm');
+        activeBtn.classList.remove('text-slate-500');
+        inactiveBtn.classList.remove('bg-white', 'text-blue-600', 'shadow-sm');
+        inactiveBtn.classList.add('text-slate-500');
+        
+        activeArea.classList.remove('hidden');
+        inactiveArea.classList.add('hidden');
+        
+        photoData = null;
+        resetCameraView();
+        resetUploadView();
+    }
+
+    // Webcam Logic
+    async function initWebcam() {
+        if (!navigator.mediaDevices?.getUserMedia) {
+            return alert("Kamera tidak didukung di browser ini.");
+        }
+        try {
+            streamActive = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+            video.srcObject = streamActive;
+        } catch (err) {
+            alert("Gagal mengakses kamera. Pastikan izin kamera telah diberikan.");
+        }
+    }
+
+    function stopWebcam() {
+        if (streamActive) {
+            streamActive.getTracks().forEach(track => track.stop());
+            streamActive = null;
+        }
+    }
+
+    // Capture Snapshot
+    snapBtn.addEventListener('click', () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        
+        photoData = canvas.toDataURL('image/png');
+        snapshotPreview.src = photoData;
+        snapshotPreview.classList.remove('hidden');
+        snapBtn.classList.add('hidden');
+        retakeBtn.classList.remove('hidden');
+    });
+
+    // File Upload Logic
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            photoData = ev.target.result;
+            uploadPreview.src = photoData;
+            uploadPreview.classList.remove('hidden');
+            uploadPlaceholder.classList.add('hidden');
+            retakeBtn.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+    });
+
+    retakeBtn.addEventListener('click', () => {
+        photoData = null;
+        resetCameraView();
+        resetUploadView();
+    });
+
+    function resetCameraView() {
+        snapshotPreview.classList.add('hidden');
+        snapBtn.classList.remove('hidden');
+        retakeBtn.classList.add('hidden');
+    }
+
+    function resetUploadView() {
+        uploadPreview.classList.add('hidden');
+        uploadPlaceholder.classList.remove('hidden');
+        fileInput.value = '';
+        retakeBtn.classList.add('hidden');
+    }
+
+    // Submit Action
+    registerBtn.addEventListener('click', async () => {
+        if (!photoData) {
+            return alert("Harap ambil atau unggah foto KTP Anda.");
         }
 
-        function stopWebcam() {
-            if (streamActive) {
-                streamActive.getTracks().forEach(track => track.stop());
-                streamActive = null;
+        loading.classList.remove('hidden');
+        loading.classList.add('flex');
+
+        const payload = {
+            nik: document.getElementById('nik').value,
+            nama: document.getElementById('nama').value,
+            tempat_lahir: document.getElementById('tempat_lahir').value,
+            tanggal_lahir: document.getElementById('tanggal_lahir').value,
+            jenis_kelamin: document.getElementById('jenis_kelamin').value,
+            agama: document.getElementById('agama').value,
+            alamat: document.getElementById('alamat').value,
+            status_perkawinan: 'Belum Kawin', // Default from original code flow
+            pekerjaan: document.getElementById('pekerjaan').value,
+            kewarganegaraan: 'WNI',
+            no_telp: document.getElementById('no_telp').value,
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value,
+            foto: photoData
+        };
+
+        try {
+            const resp = await fetch('<?= BASEURL; ?>/pendaftaran/simpan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const res = await resp.json();
+            
+            if (res.status === 'success') {
+                window.location.href = '<?= BASEURL; ?>/pendaftaran/kartu/' + res.id;
+            } else {
+                alert(res.message || "Gagal mendaftar.");
+                loading.classList.add('hidden');
+                loading.classList.remove('flex');
             }
+        } catch (err) {
+            alert("Kesalahan koneksi.");
+            loading.classList.add('hidden');
+            loading.classList.remove('flex');
         }
+    });
+</script>
 
-        // Take snapshot
-        snapBtn.addEventListener('click', () => {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            const context = canvas.getContext('2d');
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            photoData = canvas.toDataURL('image/png');
-            snapshotPreview.src = photoData;
-            snapshotPreview.style.display = 'block';
-
-            snapBtn.style.display = 'none';
-            retakeBtn.style.display = 'block';
-        });
-
-        // Retake Camera
-        function resetCameraView() {
-            snapshotPreview.style.display = 'none';
-            snapBtn.style.display = 'flex';
-            retakeBtn.style.display = 'none';
-        }
-
-        retakeBtn.addEventListener('click', () => {
-            photoData = null;
-            if (currentMode === 'camera') {
-                resetCameraView();
-            } else if (currentMode === 'upload') {
-                resetUploadView();
-            }
-        });
-
-        // Upload Logic
-        fileInput.addEventListener('change', function (e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function (event) {
-                photoData = event.target.result;
-                uploadPreview.src = photoData;
-                uploadPreview.style.display = 'block';
-                uploadPlaceholder.style.display = 'none';
-                retakeBtn.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        });
-
-        function resetUploadView() {
-            uploadPreview.style.display = 'none';
-            uploadPlaceholder.style.display = 'block';
-            fileInput.value = '';
-            retakeBtn.style.display = 'none';
-        }
-
-        // Submit registration
-        registerBtn.addEventListener('click', async () => {
-            const nama = document.getElementById('nama').value;
-            const no_telp = document.getElementById('no_telp').value;
-            const email = document.getElementById('email').value;
-            const alamat = document.getElementById('alamat').value;
-
-            if (!photoData) {
-                alert("Harap ambil foto wajah atau unggah foto Anda terlebih dahulu!");
-                return;
-            }
-
-            loading.style.display = 'flex';
-
-            const payload = {
-                nama: nama,
-                no_telp: no_telp,
-                email: email,
-                alamat: alamat,
-                foto: photoData
-            };
-
-            try {
-                const response = await fetch('<?= BASEURL; ?>/pendaftaran/simpan', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-
-                if (result.status === 'success') {
-                    window.location.href = '<?= BASEURL; ?>/pendaftaran/kartu/' + result.id;
-                } else {
-                    alert(result.message || "Terjadi kesalahan saat pendaftaran.");
-                    loading.style.display = 'none';
-                }
-            } catch (err) {
-                console.error(err);
-                alert("Terjadi kesalahan koneksi server.");
-                loading.style.display = 'none';
-            }
-        });
-    </script>
-</body>
-
-</html>
+<?php $this->view('templates/footer_auth'); ?>

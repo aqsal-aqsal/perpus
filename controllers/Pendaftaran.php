@@ -14,65 +14,58 @@ class Pendaftaran extends Controller {
                 return;
             }
 
-            $nama = htmlspecialchars($input['nama']);
-            $alamat = htmlspecialchars($input['alamat']);
-            $no_telp = htmlspecialchars($input['no_telp']);
-            $email = htmlspecialchars($input['email']);
-            $fotoBase64 = $input['foto']; // base64 encoded image string
+            // Extract KTP Fields
+            $data = [
+                'nik' => htmlspecialchars($input['nik']),
+                'nama' => htmlspecialchars($input['nama']),
+                'tempat_lahir' => htmlspecialchars($input['tempat_lahir']),
+                'tanggal_lahir' => htmlspecialchars($input['tanggal_lahir']),
+                'jenis_kelamin' => htmlspecialchars($input['jenis_kelamin']),
+                'agama' => htmlspecialchars($input['agama']),
+                'alamat' => htmlspecialchars($input['alamat']),
+                'status_perkawinan' => htmlspecialchars($input['status_perkawinan']),
+                'pekerjaan' => htmlspecialchars($input['pekerjaan']),
+                'kewarganegaraan' => htmlspecialchars($input['kewarganegaraan']),
+                'no_telp' => htmlspecialchars($input['no_telp']),
+                'username' => htmlspecialchars($input['username']),
+                'password' => $input['password'],
+                'foto' => 'default_ktp.png'
+            ];
             
-            // Process the base64 image
-            $image_parts = explode(";base64,", $fotoBase64);
-            if (count($image_parts) == 2) {
-                $image_type_aux = explode("image/", $image_parts[0]);
-                $image_type = $image_type_aux[1];
-                $image_base64 = base64_decode($image_parts[1]);
-                
-                $fileName = uniqid() . '.png'; // Store as PNG since canvas exports as PNG
-                $fileDir = $_SERVER['DOCUMENT_ROOT'] . '/perpus/public/img/anggota/';
-                
-                // Ensure directory exists (we created it earlier but good to have)
-                if (!is_dir($fileDir)) {
-                    mkdir($fileDir, 0777, true);
-                }
-                
-                $fileLocation = $fileDir . $fileName;
-                
-                if(file_put_contents($fileLocation, $image_base64)) {
-                    $dataAnggota = [
-                        'nama' => $nama,
-                        'alamat' => $alamat,
-                        'no_telp' => $no_telp,
-                        'email' => $email,
-                        'tanggal_daftar' => date('Y-m-d'),
-                        'foto' => $fileName
-                    ];
+            // Process the base64 image (KTP Photo)
+            if (!empty($input['foto'])) {
+                $fotoBase64 = $input['foto'];
+                $image_parts = explode(";base64,", $fotoBase64);
+                if (count($image_parts) == 2) {
+                    $image_base64 = base64_decode($image_parts[1]);
+                    $fileName = 'ktp_' . $data['nik'] . '_' . time() . '.png';
+                    $fileDir = $_SERVER['DOCUMENT_ROOT'] . '/perpus/public/img/ktp/';
                     
-                    $anggotaModel = $this->model('Anggota_model');
-                    $result = $anggotaModel->daftarAnggotaBaru($dataAnggota);
-                    
-                    if ($result > 0) {
-                        // Retrieve the last inserted ID to show the card
-                        // Since PDO might not reliably return it without a specific query, let's fetch it by email and descending id
-                        $lastAnggota = $anggotaModel->getLastAnggotaByEmail($email);
-                        $id_anggota = $lastAnggota['id_anggota'];
-                        
-                        echo json_encode([
-                            'status' => 'success', 
-                            'message' => 'Pendaftaran berhasil!',
-                            'id' => $id_anggota
-                        ]);
-                        return;
-                    } else {
-                        echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan ke database']);
-                        return;
+                    if (!is_dir($fileDir)) {
+                        mkdir($fileDir, 0777, true);
                     }
-                } else {
-                    echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan foto']);
-                    return;
+                    
+                    if(file_put_contents($fileDir . $fileName, $image_base64)) {
+                        $data['foto'] = $fileName;
+                    }
                 }
+            }
+            
+            $anggotaModel = $this->model('Anggota_model');
+            if ($anggotaModel->daftarAnggotaBaru($data) > 0) {
+                // Get the ID to allow downloading/viewing card if needed
+                $this->db = new Database;
+                $this->db->query("SELECT id_user FROM users WHERE username = :un");
+                $this->db->bind('un', $data['username']);
+                $user = $this->db->single();
+
+                echo json_encode([
+                    'status' => 'success', 
+                    'message' => 'Pendaftaran berhasil!',
+                    'id' => $user['id_user']
+                ]);
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Format foto tidak valid']);
-                return;
+                echo json_encode(['status' => 'error', 'message' => 'Gagal mendaftar. Kemungkinan NIK atau Username sudah ada.']);
             }
         }
     }

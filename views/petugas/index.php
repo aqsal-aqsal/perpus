@@ -45,7 +45,7 @@
                     <tr class="hover:bg-teal-50/30 transition-colors group cursor-default">
                         <td class="px-6 py-4">
                             <div class="text-xs font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded w-fit text-center border border-slate-100">
-                                #<?= str_pad($p['id_petugas'], 3, '0', STR_PAD_LEFT); ?>
+                                #<?= str_pad($p['id_user'], 3, '0', STR_PAD_LEFT); ?>
                             </div>
                         </td>
                         <td class="px-6 py-4">
@@ -55,7 +55,7 @@
                                 </div>
                                 <div class="font-bold text-slate-800 group-hover:text-teal-700 transition-colors">
                                     <?= $p['nama']; ?>
-                                    <?php if ($p['id_petugas'] == $_SESSION['user_ses']['id']): ?>
+                                    <?php if ($p['id_user'] == $_SESSION['user_ses']['id']): ?>
                                         <span class="ml-2 text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-bold">Anda</span>
                                     <?php endif; ?>
                                 </div>
@@ -65,7 +65,7 @@
                             <span class="bg-slate-100 text-slate-600 border border-slate-200 px-2 py-1 rounded text-xs font-mono">@<?= $p['username']; ?></span>
                         </td>
                         <td class="px-6 py-4">
-                            <?php if ($p['level'] == 'admin'): ?>
+                            <?php if ($p['role'] == 'admin'): ?>
                                 <span class="bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full font-bold text-[11px] border border-emerald-100 flex items-center w-fit shadow-sm">
                                     <i class="ph-bold ph-shield-check text-emerald-500 mr-1.5"></i> Administrator
                                 </span>
@@ -77,10 +77,10 @@
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-center gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="editPetugas('<?= $p['id_petugas']; ?>', '<?= addslashes($p['nama']); ?>', '<?= addslashes($p['username']); ?>', '<?= $p['level']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-teal-50 hover:text-teal-600 hover:border-teal-200 flex items-center justify-center transition-all shadow-sm border-b-2">
+                                <button onclick="editPetugas('<?= $p['id_user']; ?>', '<?= addslashes($p['nama']); ?>', '<?= addslashes($p['username']); ?>', '<?= $p['role']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-teal-50 hover:text-teal-600 hover:border-teal-200 flex items-center justify-center transition-all shadow-sm border-b-2">
                                     <i class="ph-bold ph-pencil-simple text-sm"></i>
                                 </button>
-                                <?php if ($p['id_petugas'] != $_SESSION['user_ses']['id']): ?>
+                                <?php if ($p['id_user'] != $_SESSION['user_ses']['id']): ?>
                                 <button onclick="openModal('modalHapusPetugas')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200 flex items-center justify-center transition-all shadow-sm border-b-2">
                                     <i class="ph-bold ph-trash text-sm"></i>
                                 </button>
@@ -221,11 +221,11 @@
 </div>
 
 <script>
-function editPetugas(id, nama, username, level) {
+function editPetugas(id, nama, username, role) {
     document.getElementById('edit_id_petugas').value = id;
     document.getElementById('edit_nama').value = nama;
     document.getElementById('edit_username').value = username;
-    document.getElementById('edit_level').value = level;
+    document.getElementById('edit_level').value = role;
     openModal('modalEditPetugas');
 }
 </script>

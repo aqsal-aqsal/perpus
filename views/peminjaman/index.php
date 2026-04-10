@@ -45,54 +45,67 @@
                     </td>
                 </tr>
                 <?php else : ?>
-                    <?php foreach ($data['peminjaman'] as $p) : ?>
+                <?php foreach ($data['peminjaman'] as $p) : ?>
                     <tr class="hover:bg-orange-50/30 transition-colors group cursor-default">
-                        <td class="px-6 py-4">
-                            <div class="text-[11px] font-bold text-slate-500 bg-slate-50 px-2.5 py-1.5 rounded w-fit text-center border border-slate-200 shadow-[0_2px_0_0_rgba(226,232,240,1)]">
+                        <td class="px-6 py-4 text-center">
+                            <div class="text-[11px] font-bold text-slate-500 bg-slate-50 px-2.5 py-1.5 rounded w-fit mx-auto border border-slate-200 shadow-[0_2px_0_0_rgba(226,232,240,1)]">
                                 TR-<?= str_pad($p['id_peminjaman'], 4, '0', STR_PAD_LEFT); ?>
                             </div>
                         </td>
                         <td class="px-6 py-4">
                             <div class="font-bold text-slate-800 group-hover:text-orange-600 transition-colors">
-                                <?= $p['nama_anggota'] ?: '<span class="text-slate-400 italic">Anonim</span>'; ?>
+                                <?= $p['nama_anggota'] ?: '<span class="text-slate-400 italic">User</span>'; ?>
                             </div>
-                            <div class="text-xs font-medium text-slate-500 mt-1 flex items-center gap-1.5 truncate max-w-xs">
-                                <i class="ph-fill ph-user-circle-gear text-slate-400"></i> Petugas: <?= $p['nama_petugas'] ?: '-'; ?>
+                            <div class="text-xs font-medium text-slate-500 mt-1 truncate max-w-xs">
+                                <i class="ph ph-book text-slate-400 mr-1"></i> <?= $p['judul']; ?>
                             </div>
                         </td>
                         <td class="px-6 py-4 font-medium text-slate-600">
-                            <div class="flex items-center gap-1.5 mb-1 text-xs">
-                                <i class="ph-bold ph-calendar-plus text-emerald-500"></i> <?= $p['tanggal_pinjam'] ? date('d M Y', strtotime($p['tanggal_pinjam'])) : '-'; ?>
-                            </div>
-                            <div class="flex items-center gap-1.5 text-xs">
-                                <i class="ph-bold ph-calendar-check text-rose-500"></i> <?= $p['tanggal_kembali'] ? date('d M Y', strtotime($p['tanggal_kembali'])) : '-'; ?>
-                            </div>
+                            <?php if ($p['status'] == 'booking'): ?>
+                                <span class="text-xs text-orange-500 font-bold italic">Menunggu Diambil</span>
+                            <?php else: ?>
+                                <div class="flex items-center gap-1.5 mb-1 text-xs">
+                                    <i class="ph-bold ph-calendar-plus text-emerald-500"></i> <?= date('d M Y', strtotime($p['tanggal_pinjam'])) ?>
+                                </div>
+                                <div class="flex items-center gap-1.5 text-xs text-rose-500">
+                                    <i class="ph-bold ph-calendar-check"></i> <span class="font-bold"><?= $p['batas_kembali'] ? date('d M Y', strtotime($p['batas_kembali'])) : '-'; ?></span>
+                                </div>
+                            <?php endif; ?>
                         </td>
                         <td class="px-6 py-4 text-center">
-                            <?php if ($p['status'] == 'dipinjam'): ?>
+                            <?php if ($p['status'] == 'booking'): ?>
                                 <span class="bg-orange-50 text-orange-700 px-3 py-1.5 rounded-full font-bold text-xs border border-orange-100 shadow-sm flex items-center justify-center w-fit mx-auto">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-orange-500 mr-1.5 animate-pulse"></span> Dipinjam
+                                    Booking
+                                </span>
+                            <?php elseif ($p['status'] == 'dipinjam'): ?>
+                                <span class="bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full font-bold text-xs border border-blue-100 shadow-sm flex items-center justify-center w-fit mx-auto">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-blue-500 mr-1.5 animate-pulse"></span> Dipinjam
+                                </span>
+                            <?php elseif ($p['status'] == 'terlambat'): ?>
+                                <span class="bg-red-50 text-red-700 px-3 py-1.5 rounded-full font-bold text-xs border border-red-100 shadow-sm flex items-center justify-center w-fit mx-auto">
+                                    Terlambat
                                 </span>
                             <?php else: ?>
                                 <span class="bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full font-bold text-xs border border-emerald-100 shadow-sm flex items-center justify-center w-fit mx-auto">
-                                    <i class="ph-bold ph-check text-emerald-500 mr-1"></i> Kembali
+                                    <i class="ph-bold ph-check mr-1"></i> Kembali
                                 </span>
                             <?php endif; ?>
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-center gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="openModal('modalInfoPeminjaman')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 flex items-center justify-center transition-all shadow-sm border-b-2" title="Detail Transaksi">
-                                    <i class="ph-bold ph-list-magnifying-glass text-sm"></i>
-                                </button>
-                                <?php if ($p['status'] == 'dipinjam'): ?>
-                                <button onclick="prosesKembali('<?= $p['id_peminjaman']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 flex items-center justify-center transition-all shadow-sm border-b-2" title="Proses Pengembalian">
-                                    <i class="ph-bold ph-check-square-offset text-sm"></i>
-                                </button>
+                                <?php if ($p['status'] == 'booking'): ?>
+                                    <button onclick="verifikasiBooking('<?= $p['id_peminjaman']; ?>')" class="px-4 py-2 rounded-xl bg-orange-500 text-white text-xs font-bold hover:bg-orange-600 transition-all shadow-md shadow-orange-500/20" title="Verifikasi Pengambilan">
+                                        Verifikasi <i class="ph ph-check-circle ml-1"></i>
+                                    </button>
+                                <?php elseif ($p['status'] == 'dipinjam' || $p['status'] == 'terlambat'): ?>
+                                    <button onclick="prosesKembali('<?= $p['id_peminjaman']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 flex items-center justify-center transition-all shadow-sm border-b-2" title="Proses Pengembalian">
+                                        <i class="ph-bold ph-check-square-offset text-sm"></i>
+                                    </button>
                                 <?php endif; ?>
                             </div>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
+                <?php endforeach; ?>
                 <?php endif; ?>
             </tbody>
         </table>
@@ -134,7 +147,7 @@
                         <select name="id_anggota" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-100 focus:border-orange-500 outline-none transition-all">
                             <option value="">Cari member...</option>
                             <?php foreach ($data['anggota'] as $a): ?>
-                                <option value="<?= $a['id_anggota']; ?>"><?= $a['nama']; ?> ( <?= $a['email']; ?> )</option>
+                                <option value="<?= $a['id_user']; ?>"><?= $a['nama']; ?> ( <?= $a['email']; ?> )</option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -207,9 +220,33 @@
     </div>
 </div>
 
+<!-- MODAL VERIFIKASI BOOKING -->
+<div id="modalVerifikasiBooking" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 sm:p-0">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeModal('modalVerifikasiBooking')"></div>
+    <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden transform scale-95 opacity-0 translate-y-4 transition-all duration-300 relative z-10">
+        <div class="p-6 text-center">
+            <div class="w-16 h-16 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center mx-auto mb-4">
+                <i class="ph-fill ph-check-circle text-4xl"></i>
+            </div>
+            <h3 class="font-bold text-xl text-slate-800 mb-2">Verifikasi Pengambilan?</h3>
+            <p class="text-slate-500 text-sm mb-8">Konfirmasi bahwa anggota telah mengambil buku secara fisik. Status akan berubah menjadi <b>Dipinjam</b>.</p>
+            
+            <div class="flex justify-center gap-3">
+                <button type="button" onclick="closeModal('modalVerifikasiBooking')" class="px-5 py-2.5 text-slate-500 bg-white border border-slate-200 hover:bg-slate-50 font-semibold rounded-xl transition-colors w-full">Batal</button>
+                <a id="btnVerifikasiFinal" href="#" class="px-5 py-2.5 text-white bg-orange-500 hover:bg-orange-600 font-semibold rounded-xl shadow-lg shadow-orange-500/30 transition-colors w-full flex items-center justify-center">Ya, Verifikasi</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 function prosesKembali(id) {
-    document.getElementById('btnKembaliFinal').href = "<?= BASEURL; ?>/peminjaman/kembali/" + id;
+    document.getElementById('btnKembaliFinal').href = "<?= BASEURL; ?>/peminjaman/kembalikan/" + id;
     openModal('modalKembaliPeminjaman');
+}
+
+function verifikasiBooking(id) {
+    document.getElementById('btnVerifikasiFinal').href = "<?= BASEURL; ?>/peminjaman/verifikasi/" + id;
+    openModal('modalVerifikasiBooking');
 }
 </script>

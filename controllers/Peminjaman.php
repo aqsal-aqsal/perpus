@@ -7,11 +7,8 @@ class Peminjaman extends Controller {
     }
 
     public function index() {
-        $data['judul'] = 'Transaksi Peminjaman | Aplikasi Perpus';
-        $data['user'] = $_SESSION['user_ses'];
+        $data['judul'] = 'Daftar Peminjaman | Aplikasi Perpus';
         $data['peminjaman'] = $this->model('Peminjaman_model')->getAllPeminjaman();
-        $data['buku'] = $this->model('Buku_model')->getAllBuku();
-        $data['anggota'] = $this->model('Anggota_model')->getAllAnggota();
         
         $this->view('templates/header', $data);
         $this->view('templates/sidebar', $data);
@@ -30,14 +27,21 @@ class Peminjaman extends Controller {
         exit;
     }
 
-    public function kembali($id)
-    {
-        if ($this->model('Peminjaman_model')->kembalikanBuku($id) > 0) {
-            Flasher::setFlash('berhasil', 'dikembalikan', 'success');
+    public function verifikasi($id) {
+        if ($this->model('Peminjaman_model')->verifikasiBooking($id)) {
+            Flasher::setFlash('Booking berhasil diverifikasi!', 'Berhasil', 'success');
         } else {
-            Flasher::setFlash('gagal', 'dikembalikan', 'danger');
+            Flasher::setFlash('Gagal memverifikasi booking.', 'Gagal', 'danger');
         }
-        header('Location: ' . BASEURL . '/peminjaman');
-        exit;
+        $this->redirect('peminjaman');
+    }
+
+    public function kembalikan($id) {
+        if ($this->model('Peminjaman_model')->kembalikanBuku($id)) {
+            Flasher::setFlash('Buku telah dikembalikan.', 'Berhasil', 'success');
+        } else {
+            Flasher::setFlash('Gagal memproses pengembalian.', 'Gagal', 'danger');
+        }
+        $this->redirect('peminjaman');
     }
 }

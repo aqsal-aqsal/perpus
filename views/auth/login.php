@@ -32,7 +32,13 @@
                 </button>
             </div>
         </form>
+    <div class="mt-8 text-center relative z-10">
+        <a href="<?= BASEURL; ?>" class="text-slate-400 hover:text-blue-600 text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 group">
+            <i class="ph ph-arrow-left transition-transform duration-200 group-hover:-translate-x-1"></i>
+            Kembali ke Beranda
+        </a>
     </div>
+
     <p class="text-center text-slate-400 text-xs mt-8 font-medium">
         &copy; <?= date('Y'); ?> Aplikasi Perpustakaan Digital.<br>All rights reserved.
     </p>

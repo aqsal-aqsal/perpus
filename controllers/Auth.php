@@ -16,16 +16,16 @@ class Auth extends Controller {
             $username = $_POST['username'];
             $password = $_POST['password'];
 
-            $user = $this->model('Auth_model')->getPetugasByUsername($username);
+            $user = $this->model('Auth_model')->getUserByUsername($username);
 
             if ($user) {
                 if (password_verify($password, $user['password'])) {
                     // Berhasil login
                     $_SESSION['user_ses'] = [
-                        'id' => $user['id_petugas'],
+                        'id' => $user['id_user'],
                         'nama' => $user['nama'],
                         'username' => $user['username'],
-                        'level' => $user['level']
+                        'role' => $user['role']
                     ];
                     $this->redirect('dashboard');
                 } else {

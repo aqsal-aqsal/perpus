@@ -10,7 +10,7 @@ class Petugas extends Controller {
         }
 
         // Cek jika petugas bukan level 'admin', maka tendang balik (Opsional proteksi)
-        if ($_SESSION['user_ses']['level'] !== 'admin') {
+        if ($_SESSION['user_ses']['role'] !== 'admin') {
             header('Location: ' . BASEURL . '/dashboard');
             exit;
         }
