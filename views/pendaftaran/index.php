@@ -197,30 +197,6 @@
     </div>
 </div>
 
-<style>
-    @keyframes fade-in {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
-    
-    @keyframes blob {
-        0% { transform: translate(0px, 0px) scale(1); }
-        33% { transform: translate(30px, -50px) scale(1.1); }
-        66% { transform: translate(-20px, 20px) scale(0.9); }
-        100% { transform: translate(0px, 0px) scale(1); }
-    }
-    .animate-blob { animation: blob 7s infinite; }
-    .animation-delay-2000 { animation-delay: 2s; }
-
-    /* Hide default radio circle */
-    select {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-        background-position: right 1rem center;
-        background-repeat: no-repeat;
-        background-size: 1.5em 1.5em;
-    }
-</style>
 
 <script>
     // DOM Elements
