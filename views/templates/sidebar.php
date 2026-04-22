@@ -107,10 +107,10 @@ $active = strtolower($url[0]);
         <div class="flex items-center p-3 text-sm bg-slate-50 rounded-xl mb-3 border border-slate-100">
             <div
                 class="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold mr-3 shadow-md shadow-blue-500/20">
-                <?= substr($data['user']['nama'], 0, 1); ?>
+                <?= substr(($data['user']['nama'] ?? $_SESSION['user_ses']['nama']) ?? '', 0, 1); ?>
             </div>
             <div class="overflow-hidden">
-                <p class="font-bold text-slate-700 truncate text-[13px]"><?= $data['user']['nama']; ?></p>
+                <p class="font-bold text-slate-700 truncate text-[13px]"><?= $data['user']['nama'] ?? $_SESSION['user_ses']['nama'] ?? 'User'; ?></p>
                 <p class="text-[11px] text-slate-500 capitalize tracking-wide font-medium">
                     <?= $_SESSION['user_ses']['role']; ?></p>
             </div>

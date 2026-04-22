@@ -9,6 +9,11 @@
         <div class="text-center mb-10 relative z-10 pt-4">
             <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 mb-2">Pendaftaran Anggota</h1>
             <p class="text-slate-500 text-sm font-medium">Lengkapi biodata KTP untuk akses penuh layanan E-Perpus</p>
+            
+            <!-- Autofill Button -->
+            <button type="button" onclick="autofillForm()" class="mt-4 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-full transition-all flex items-center gap-2 mx-auto">
+                <i class="ph ph-magic-wand"></i> Isi Otomatis (Demo)
+            </button>
         </div>
 
         <!-- Stepper -->
@@ -199,6 +204,46 @@
 
 
 <script>
+    // Autofill Function for Demo/Testing
+    function autofillForm() {
+        const firstNames = ['Budi', 'Joko', 'Siti', 'Ani', 'Agus', 'Dewi', 'Rina', 'Andi', 'Eko', 'Sari'];
+        const lastNames = ['Santoso', 'Susilo', 'Rahayu', 'Permata', 'Wahyudi', 'Kusuma', 'Saputra', 'Lestari', 'Hidayat', 'Pratama'];
+        const cities = ['Jakarta', 'Surabaya', 'Bandung', 'Medan', 'Semarang', 'Makassar', 'Palembang', 'Yogyakarta', 'Denpasar', 'Malang'];
+        const jobs = ['Pelajar', 'Mahasiswa', 'Pegawai Swasta', 'Wiraswasta', 'Guru', 'Programmer', 'Freelancer'];
+        const streets = ['Jl. Merdeka', 'Jl. Sudirman', 'Jl. Thamrin', 'Jl. Gajah Mada', 'Jl. Diponegoro', 'Jl. Ahmad Yani'];
+
+        const random = (arr) => arr[Math.floor(Math.random() * arr.length)];
+        const randomNum = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+        const firstName = random(firstNames);
+        const lastName = random(lastNames);
+        const name = `${firstName} ${lastName}`;
+        const nik = "6203" + Math.random().toString().slice(2, 14);
+        const username = (firstName + lastName).toLowerCase() + randomNum(10, 99);
+
+        document.getElementById('nik').value = nik;
+        document.getElementById('nama').value = name;
+        document.getElementById('tempat_lahir').value = random(cities);
+        document.getElementById('tanggal_lahir').value = `19${randomNum(80, 99)}-0${randomNum(1, 9)}-${randomNum(10, 28)}`;
+        document.getElementById('jenis_kelamin').value = random(['Laki-laki', 'Perempuan']);
+        document.getElementById('agama').value = 'Islam';
+        document.getElementById('alamat').value = `${random(streets)} No. ${randomNum(1, 100)}, ${random(cities)}`;
+        document.getElementById('pekerjaan').value = random(jobs);
+        document.getElementById('no_telp').value = '0812' + Math.random().toString().slice(2, 10);
+        document.getElementById('username').value = username;
+        document.getElementById('password').value = 'password123';
+
+        // Add a nice visual feedback
+        const inputs = ['nik', 'nama', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'no_telp', 'username', 'password', 'pekerjaan'];
+        inputs.forEach(id => {
+            const el = document.getElementById(id);
+            el.classList.add('ring-2', 'ring-blue-400', 'bg-blue-50');
+            setTimeout(() => {
+                el.classList.remove('ring-2', 'ring-blue-400', 'bg-blue-50');
+            }, 1000);
+        });
+    }
+
     // DOM Elements
     const step1 = document.getElementById('step-1');
     const step2 = document.getElementById('step-2');

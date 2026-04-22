@@ -7,7 +7,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <link rel="stylesheet" href="<?= BASEURL; ?>/public/css/card.css">
+    <style>
+        <?php 
+            $css_path = __DIR__ . '/../../public/css/card.css';
+            if (file_exists($css_path)) {
+                echo file_get_contents($css_path);
+            } else {
+                // Critical fallback to ensure basic structure if file not found
+                echo ".id-card { background: #001021; color: white; padding: 40px; border-radius: 15px; width: 850px; height: 520px; }";
+                echo ".card-header { background: #c5a059; padding: 20px; }";
+            }
+        ?>
+    </style>
 </head>
 <body>
 
@@ -18,70 +29,94 @@
 
     <div class="card-wrapper" id="card-download">
         <div class="id-card">
-            <!-- Header Shapes -->
-            <div class="top-shape-light">
-                <div class="top-shape-light-overlay"></div>
+            <!-- Decorative Borders -->
+            <div class="card-border-1"></div>
+            <div class="card-border-2"></div>
+
+            <!-- Background Decoration -->
+            <div class="card-bg-patterns">
+                <div class="pattern-guilloche"></div>
             </div>
-            <div class="top-shape-dark">
+            <div class="bg-watermark">E-PERPUS</div>
+            
+            <div class="card-header">
                 <div class="brand">
                     <div class="brand-icon">
-                        <i class="fas fa-book-reader"></i>
+                        <i class="fas fa-university"></i>
                     </div>
-                    <div class="brand-text">
-                        <h2>E-PERPUS</h2>
-                        <p>PERPUSTAKAAN KAPUAS</p>
+                    <div class="brand-info">
+                        <h2>PERPUSTAKAAN DIGITAL</h2>
+                        <p>DINAS KEARSIPAN DAN PERPUSTAKAAN DAERAH</p>
                     </div>
                 </div>
             </div>
 
-            <div class="card-content">
-                <!-- Photo Area -->
-                <div class="photo-column">
+            <div class="card-body">
+                <div class="photo-section">
                     <div class="photo-frame">
                         <?php 
-                            $foto = $data['anggota']['foto'] ? BASEURL . '/public/img/anggota/' . $data['anggota']['foto'] : 'https://ui-avatars.com/api/?name=' . urlencode($data['anggota']['nama']) . '&background=random&size=300';
+                            // Check both potential keys: 'foto' (from direct admin add) or 'foto_ktp' (from registration)
+                            $foto_name = $data['anggota']['foto_ktp'] ?? $data['anggota']['foto'] ?? null;
+                            $foto_path = $data['anggota']['foto_ktp'] ? '/public/img/ktp/' : '/public/img/anggota/';
+                            
+                            $foto = $foto_name ? BASEURL . $foto_path . $foto_name : 'https://ui-avatars.com/api/?name=' . urlencode($data['anggota']['nama']) . '&background=001021&color=c5a059&size=500';
                         ?>
                         <img src="<?= $foto ?>" alt="Member Photo">
                     </div>
-                    <div class="validity">
-                        <div class="validity-label">BERLAKU SAMPAI:</div>
-                        <div class="validity-date">SEUMUR HIDUP</div>
+                    <div class="member-id-container">
+                        <div class="member-id-label">MEMBER ID</div>
+                        <div class="member-id">
+                            <?= str_pad($data['anggota']['id_user'], 8, '0', STR_PAD_LEFT); ?>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Info Area -->
-                <div class="details-column">
-                    <h1 class="card-title">KARTU ANGGOTA</h1>
+                <div class="info-section">
+                    <div class="id-title-area">
+                        <h1 class="id-title">KARTU ANGGOTA</h1>
+                        <div class="qr-code-box">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<?= $data['anggota']['id_user']; ?>" alt="QR Code">
+                        </div>
+                    </div>
                     
-                    <table class="info-table">
-                        <tr>
-                            <td class="info-label">Nama:</td>
-                            <td class="info-value"><?= htmlspecialchars($data['anggota']['nama']); ?></td>
-                        </tr>
-                        <tr>
-                            <td class="info-label">Nomor:</td>
-                            <td class="info-value"><?= htmlspecialchars($data['anggota']['no_telp']); ?></td>
-                        </tr>
-                        <tr>
-                            <td class="info-label">Tgl Daftar:</td>
-                            <td class="info-value"><?= date('d F Y', strtotime($data['anggota']['tanggal_daftar'])); ?></td>
-                        </tr>
-                        <tr>
-                            <td class="info-label">Alamat:</td>
-                            <td class="info-value" style="font-size: 1.2rem; line-height: 1.3;">
-                                <?= htmlspecialchars((strlen($data['anggota']['alamat']) > 50) ? substr($data['anggota']['alamat'], 0, 50) . '...' : $data['anggota']['alamat']); ?>
-                            </td>
-                        </tr>
-                    </table>
+                    <div class="info-grid">
+                        <div class="info-item full">
+                            <div class="label">NAMA LENGKAP</div>
+                            <div class="value uppercase"><?= htmlspecialchars($data['anggota']['nama']); ?></div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">NOMOR TELEPON</div>
+                            <div class="value"><?= htmlspecialchars($data['anggota']['no_telp']); ?></div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">TANGGAL TERBIT</div>
+                            <div class="value"><?= date('d M Y', strtotime($data['anggota']['tanggal_daftar'])); ?></div>
+                        </div>
+                        <div class="info-item full">
+                            <div class="label">ALAMAT</div>
+                            <div class="value"><?= htmlspecialchars($data['anggota']['alamat']); ?></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Footer Area -->
             <div class="card-footer">
-                <div class="footer-dots"></div>
-                <div class="signature-area">
-                    <div class="signature-name">H. Suwarno Muriyat</div>
-                    <div class="signature-title">Kepala Dispersip</div>
+                <div class="footer-left">
+                    <div class="validity-badge">
+                        <i class="fas fa-shield-halved"></i>
+                        VALID THRU: <?= date('d M Y', strtotime($data['anggota']['tanggal_daftar'] . ' +1 year')); ?>
+                    </div>
+                    <div class="legal-notice">
+                        * Kartu ini adalah dokumen resmi digital yang sah sebagai identitas anggota Perpustakaan Digital. Harap tunjukkan kartu ini saat melakukan transaksi peminjaman.
+                    </div>
+                </div>
+                <div class="authority-section">
+                    <div class="official-seal">
+                        OFFICIAL<br>DIGITAL CARD<br>VERIFIED
+                    </div>
+                    <div class="signature-line"></div>
+                    <div class="signee-name">Drs. Budi Santoso, M.Si</div>
+                    <div class="signee-rank">Kepala Perpustakaan</div>
                 </div>
             </div>
         </div>
@@ -111,12 +146,12 @@
             element.style.animation = 'none';
 
             const opt = {
-                margin:       10, 
-                filename:     'kartu-anggota-<?= $data['anggota']['id_anggota']; ?>.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: true, backgroundColor: '#ffffff', scrollY: 0, scrollX: 0 }, 
-                jsPDF:        { unit: 'px', format: [820, 520], orientation: 'landscape' } 
-            };
+                margin:       [0, 0], 
+                filename:     'kartu-anggota-<?= $data['anggota']['id_user']; ?>.pdf',
+                image:        { type: 'jpeg', quality: 1.0 },
+                html2canvas:  { scale: 3, useCORS: true, logging: false, backgroundColor: '#ffffff', scrollY: 0, scrollX: 0 }, 
+                jsPDF:        { unit: 'px', format: [852, 522], orientation: 'landscape' } 
+        };
 
             // Allow the browser a tiny moment to reflow the layout without the scale transform
             setTimeout(() => {

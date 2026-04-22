@@ -8,7 +8,7 @@ class Anggota_model {
     }
 
     public function getAllAnggota() {
-        $this->db->query("SELECT * FROM {$this->table} WHERE role = 'peminjam' ORDER BY id_user DESC");
+        $this->db->query("SELECT *, created_at AS tanggal_daftar FROM {$this->table} WHERE role = 'peminjam' ORDER BY id_user DESC");
         return $this->db->resultSet();
     }
 
@@ -88,14 +88,14 @@ class Anggota_model {
 
     public function getLastAnggotaByEmail($email)
     {
-        $this->db->query("SELECT * FROM {$this->table} WHERE email = :email AND role = 'peminjam' ORDER BY id_user DESC LIMIT 1");
+        $this->db->query("SELECT *, created_at AS tanggal_daftar FROM {$this->table} WHERE email = :email AND role = 'peminjam' ORDER BY id_user DESC LIMIT 1");
         $this->db->bind('email', $email);
         return $this->db->single();
     }
 
     public function getAnggotaById($id)
     {
-        $this->db->query("SELECT * FROM {$this->table} WHERE id_user = :id AND role = 'peminjam'");
+        $this->db->query("SELECT *, created_at AS tanggal_daftar FROM {$this->table} WHERE id_user = :id AND role = 'peminjam'");
         $this->db->bind('id', $id);
         return $this->db->single();
     }

@@ -55,7 +55,7 @@
                         <td class="px-6 py-4">
                             <div class="flex items-center">
                                 <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-100 to-purple-100 text-indigo-600 flex items-center justify-center font-bold mr-3 border border-indigo-200 uppercase text-xs shadow-sm">
-                                    <?= substr($a['nama'], 0, 2); ?>
+                                    <?= substr($a['nama'] ?? '', 0, 2); ?>
                                 </div>
                                 <div>
                                     <div class="font-bold text-slate-800 group-hover:text-indigo-700 transition-colors">
@@ -76,14 +76,14 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 text-slate-600 text-sm font-medium w-40">
-                            <?= $a['tanggal_daftar'] ? date('d M Y', strtotime($a['tanggal_daftar'])) : '-'; ?>
+                            <?= ($a['tanggal_daftar'] ?? null) ? date('d M Y', strtotime($a['tanggal_daftar'])) : '-'; ?>
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-center gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
                                 <a href="<?= BASEURL; ?>/pendaftaran/kartu/<?= $a['id_user']; ?>" target="_blank" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-green-50 hover:text-green-600 hover:border-green-200 flex items-center justify-center transition-all shadow-sm border-b-2" title="Cetak Kartu">
                                     <i class="ph-bold ph-printer text-sm"></i>
                                 </a>
-                                <button onclick="editAnggota('<?= $a['id_user']; ?>', '<?= addslashes($a['nama']); ?>', '<?= addslashes($a['alamat']); ?>', '<?= addslashes($a['no_telp']); ?>', '<?= addslashes($a['email']); ?>', '<?= $a['tanggal_daftar']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 flex items-center justify-center transition-all shadow-sm border-b-2" title="Edit">
+                                <button onclick="editAnggota('<?= $a['id_user']; ?>', '<?= addslashes($a['nama']); ?>', '<?= addslashes($a['alamat']); ?>', '<?= addslashes($a['no_telp']); ?>', '<?= addslashes($a['email']); ?>', '<?= substr($a['tanggal_daftar'] ?? '', 0, 10); ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 flex items-center justify-center transition-all shadow-sm border-b-2" title="Edit">
                                     <i class="ph-bold ph-pencil-simple text-sm"></i>
                                 </button>
                                 <button onclick="hapusAnggota('<?= $a['id_user']; ?>')" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200 flex items-center justify-center transition-all shadow-sm border-b-2">
@@ -121,7 +121,12 @@
     <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeModal('modalTambahAnggota')"></div>
     <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden transform scale-95 opacity-0 translate-y-4 transition-all duration-300 relative z-10 flex flex-col max-h-[90vh]">
         <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-            <h3 class="font-bold text-lg text-slate-800">Tambah Anggota Baru</h3>
+            <div class="flex items-center gap-3">
+                <h3 class="font-bold text-lg text-slate-800">Tambah Anggota Baru</h3>
+                <button type="button" onclick="autofillTambahAnggota()" class="px-3 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-[10px] font-bold rounded-full transition-all flex items-center gap-1.5 border border-indigo-100">
+                    <i class="ph ph-magic-wand"></i> Autofill
+                </button>
+            </div>
             <button type="button" onclick="closeModal('modalTambahAnggota')" class="text-slate-400 hover:text-red-500 transition-colors">
                 <i class="ph-bold ph-x text-xl"></i>
             </button>
@@ -173,7 +178,7 @@
         </div>
         <div class="p-6 overflow-y-auto">
             <form action="<?= BASEURL; ?>/anggota/edit" method="POST">
-                <input type="hidden" name="id_anggota" id="edit_id_anggota">
+                <input type="hidden" name="id_user" id="edit_id_anggota">
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-1">Nama Lengkap</label>
@@ -227,6 +232,38 @@
 </div>
 
 <script>
+function autofillTambahAnggota() {
+    const firstNames = ['Budi', 'Joko', 'Siti', 'Ani', 'Agus', 'Dewi', 'Rina', 'Andi', 'Eko', 'Sari'];
+    const lastNames = ['Santoso', 'Susilo', 'Rahayu', 'Permata', 'Wahyudi', 'Kusuma', 'Saputra', 'Lestari', 'Hidayat', 'Pratama'];
+    const cities = ['Jakarta', 'Surabaya', 'Bandung', 'Medan', 'Semarang', 'Makassar', 'Palembang', 'Yogyakarta', 'Denpasar', 'Malang'];
+    const streets = ['Jl. Merdeka', 'Jl. Sudirman', 'Jl. Thamrin', 'Jl. Gajah Mada', 'Jl. Diponegoro', 'Jl. Ahmad Yani'];
+
+    const random = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const randomNum = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+    const firstName = random(firstNames);
+    const lastName = random(lastNames);
+    const name = `${firstName} ${lastName}`;
+    const email = (firstName + lastName).toLowerCase() + randomNum(10, 99) + '@gmail.com';
+
+    const form = document.querySelector('#modalTambahAnggota form');
+    form.querySelector('[name="nama"]').value = name;
+    form.querySelector('[name="no_telp"]').value = '0812' + Math.random().toString().slice(2, 10);
+    form.querySelector('[name="email"]').value = email;
+    form.querySelector('[name="alamat"]').value = `${random(streets)} No. ${randomNum(1, 100)}, ${random(cities)}`;
+    
+    // Visual feedback
+    const inputs = form.querySelectorAll('input, textarea');
+    inputs.forEach(el => {
+        if (el.type !== 'hidden' && el.type !== 'date') {
+            el.classList.add('ring-2', 'ring-indigo-400', 'bg-indigo-50');
+            setTimeout(() => {
+                el.classList.remove('ring-2', 'ring-indigo-400', 'bg-indigo-50');
+            }, 800);
+        }
+    });
+}
+
 function editAnggota(id, nama, alamat, no_telp, email, tanggal_daftar) {
     document.getElementById('edit_id_anggota').value = id;
     document.getElementById('edit_nama').value = nama;

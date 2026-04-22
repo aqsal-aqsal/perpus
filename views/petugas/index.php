@@ -51,7 +51,7 @@
                         <td class="px-6 py-4">
                             <div class="flex items-center">
                                 <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-teal-500 to-emerald-500 text-white flex items-center justify-center font-bold mr-3 border border-emerald-200 uppercase text-xs shadow-sm shadow-emerald-500/20">
-                                    <?= substr($p['nama'], 0, 1); ?>
+                                    <?= substr($p['nama'] ?? '', 0, 1); ?>
                                 </div>
                                 <div class="font-bold text-slate-800 group-hover:text-teal-700 transition-colors">
                                     <?= $p['nama']; ?>
